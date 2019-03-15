@@ -3,22 +3,27 @@ using System.Collections.Generic;
 using UnityEngine;
 
 public class DeckManager : MonoBehaviour {
+    public static DeckManager instance;
     public const string path = "Cards";
     public GameObject cardPrefab;
     public GameObject deckPosition;
     public GameObject playCardPosition;
-    public ColumnsManager columns;
     private List<CardDisplay> cards;
     private List<CardDisplay> cardsToUse;
 
     void Awake() {
+        if (instance == null)
+            instance = this;
+        else
+            Destroy(gameObject);
+
         List<Card> toInstantiate = Shuffle(CardLoader.LoadCards(path));
         cards = new List<CardDisplay>();
         cardsToUse = new List<CardDisplay>();
 
         foreach (Card card in toInstantiate) {
             CardDisplay c = Instantiate(cardPrefab).GetComponent<CardDisplay>();
-            c.LoadCard(card, this, columns);
+            c.LoadCard(card);
             c.ColliderActive(false);
             cards.Add(c);
         }

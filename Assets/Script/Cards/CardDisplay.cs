@@ -10,8 +10,6 @@ public class CardDisplay : MonoBehaviour {
     private Sprite cardImage;
     private Sprite cardBack;
     private Vector3 oldPosition;
-    private DeckManager deck;
-    private ColumnsManager columns;
     private bool selected;
     private bool fliped;
     private BoxCollider coll;
@@ -36,23 +34,33 @@ public class CardDisplay : MonoBehaviour {
             selected = false;
             RaycastHit hit;
             if (Physics.Raycast(transform.position, Vector3.forward, out hit)) {
-                if (hit.collider.tag == "SuitDeck") {
+                if (hit.collider.tag == "SuitDeck" && transform.childCount == 0) {
                     SuitDeck sDeck = hit.collider.gameObject.GetComponent<SuitDeck>();
-                    if (!sDeck.Check(this)) {
+                    if (sDeck.Check(this)) {
+                        RemoveFromContainer();
+                        sDeck.AddCard(this);
+                        SuitDeckManager.instance.PositionateCard();
+                    }
+                    else {
                         Return();
                     }
                 }
                 else if (hit.collider.tag == "Card") {
                     CardDisplay cardHit = hit.collider.gameObject.GetComponent<CardDisplay>();
                     int idx;
-                    if (columns.ContainCardAsLast(cardHit, out idx)) {
+                    if (ColumnsManager.instance.ContainCardAsLast(cardHit, out idx)) {
                         if (cardHit.card.value - 1 == card.value && cardHit.card.black != card.black) {
                             MoveToColumn(idx);
-                            columns.PosisionateCards();
+                            ColumnsManager.instance.PosisionateCards();
                         }
                         else {
                             Return();
                         }
+                    }
+                    else if (transform.childCount == 0 && SuitDeckManager.instance.Contain(cardHit, out idx) && cardHit.card.value == card.value - 1 && cardHit.card.type == card.type)
+                    {
+                        MoveToSuitDeck(idx);
+                        SuitDeckManager.instance.PositionateCard(idx);
                     }
                     else {
                         Return();
@@ -102,23 +110,28 @@ public class CardDisplay : MonoBehaviour {
 
     private void MoveToColumn(int indexFromCol) {
         RemoveFromContainer();
-        columns.AddCardByIndex(this, indexFromCol);
+        ColumnsManager.instance.AddCardByIndex(this, indexFromCol);
         if (transform.childCount > 0)
             transform.GetChild(0).gameObject.GetComponent<CardDisplay>().MoveToColumn(indexFromCol);
     }
 
-    private void MoveToColumn(Column column)
-    {
+    private void MoveToColumn(Column column) {
         RemoveFromContainer();
         column.Add(this);
         if (transform.childCount > 0)
             transform.GetChild(0).gameObject.GetComponent<CardDisplay>().MoveToColumn(column);
     }
 
+    private void MoveToSuitDeck(int index) {
+        RemoveFromContainer();
+        SuitDeckManager.instance.AddCard(this, index);
+    }
+
     public void RemoveFromContainer()
     {
-        deck.RemoveCard(this);
-        columns.RemoveCard(this);
+        DeckManager.instance.RemoveCard(this);
+        ColumnsManager.instance.RemoveCard(this);
+        SuitDeckManager.instance.RemoveCard(this);
     }
     #endregion
 
@@ -159,21 +172,17 @@ public class CardDisplay : MonoBehaviour {
     }
     #endregion
 
-    public void LoadCard(Card cardData, DeckManager deckManager, ColumnsManager col) {
+    public void LoadCard(Card cardData) {
         if (cardData != null) {
             card = cardData;
             image.sprite = cardData.imgBack;
             fliped = false;
             transform.name = card.type.ToString() + "_" + card.value.ToString();
-            deck = deckManager;
-            columns = col;
         }
         else {
             Sprite[] sprites = Resources.LoadAll<Sprite>("Cards/PlayingCards");
             image.sprite = sprites.Single(s => s.name == "NULL");
             transform.name = "null";
-            deck = deckManager;
-            columns = col;
         }
     }
 }

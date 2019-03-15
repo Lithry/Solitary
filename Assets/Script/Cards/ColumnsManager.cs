@@ -3,11 +3,17 @@ using System.Collections.Generic;
 using UnityEngine;
 
 public class ColumnsManager : MonoBehaviour {
+    public static ColumnsManager instance;
     public GameObject[] col;
     public DeckManager deck;
     private List<Column> columns;
 	
 	void Start () {
+        if (instance == null)
+            instance = this;
+        else
+            Destroy(gameObject);
+
         columns = new List<Column>();
         foreach (GameObject column in col)
         {
