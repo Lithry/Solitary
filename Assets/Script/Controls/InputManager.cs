@@ -20,13 +20,23 @@ public class InputManager : MonoBehaviour
         #endif
     }
 
-    public GameObject Clic()
+    public GameObject RightClic()
     {
-        return input.Clic();
+        return input.RightClic();
     }
 
-    public bool ClicEnded()
+    public bool RightClicEnded()
     {
-        return input.ClicEnded();
+        return input.RightClicEnded();
+    }
+
+    public GameObject LeftClic()
+    {
+        return input.LeftClic();
+    }
+
+    public bool LeftClicEnded()
+    {
+        return input.LeftClicEnded();
     }
 }

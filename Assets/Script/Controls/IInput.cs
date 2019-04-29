@@ -2,6 +2,8 @@
 
 interface IInput
 {
-    GameObject Clic();
-    bool ClicEnded();
+    GameObject RightClic();
+    bool RightClicEnded();
+    GameObject LeftClic();
+    bool LeftClicEnded();
 }

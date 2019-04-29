@@ -45,6 +45,17 @@ public class SuitDeckManager : MonoBehaviour {
         }
     }
 
+    public bool CheckCard(CardDisplay card, out int idx) {
+        for (int i = 0; i < decks.Count; i++)
+        {
+            idx = i;
+            if (decks[i].Check(card))
+                return true;
+        }
+        idx = -1;
+        return false;
+    }
+
     public void AddCard(CardDisplay card, int index) {
         decks[index].AddCard(card);
     }

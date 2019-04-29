@@ -35,7 +35,6 @@ public class SuitDeck : MonoBehaviour {
 
     public void AddCard(CardDisplay card) {
         deck.Add(card);
-        card.transform.position = transform.position;
         PosisionateCards();
 
         if (deck.Count > 0)

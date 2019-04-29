@@ -3,12 +3,14 @@ using System.Collections.Generic;
 using UnityEngine;
 
 public class InputAndroid : IInput {
-    private bool clickEnd = true;
-    public GameObject Clic()
+    private bool rClickEnd = true;
+    private bool lClickEnd = true;
+
+    public GameObject RightClic()
     {
         if (Input.GetMouseButtonDown(0))
         {
-            clickEnd = false;
+            rClickEnd = false;
             RaycastHit hit;
             //Debug.DrawRay(Camera.main.ScreenToWorldPoint(new Vector3(Input.mousePosition.x, Input.mousePosition.y, 0)), Vector3.forward, Color.red, 10f, false);
             if (Physics.Raycast(Camera.main.ScreenToWorldPoint(new Vector3(Input.mousePosition.x, Input.mousePosition.y, 0)), Vector3.forward, out hit))
@@ -19,9 +21,30 @@ public class InputAndroid : IInput {
         return null;
     }
 
-    public bool ClicEnded(){
+    public bool RightClicEnded(){
         if (Input.GetMouseButtonUp(0))
-            clickEnd = true;
-        return clickEnd;
+            rClickEnd = true;
+        return rClickEnd;
+    }
+
+    public GameObject LeftClic()
+    {
+        if (Input.GetMouseButtonDown(1))
+        {
+            lClickEnd = false;
+            RaycastHit hit;
+            if (Physics.Raycast(Camera.main.ScreenToWorldPoint(new Vector3(Input.mousePosition.x, Input.mousePosition.y, 0)), Vector3.forward, out hit))
+            {
+                return hit.collider.gameObject;
+            }
+        }
+        return null;
+    }
+
+    public bool LeftClicEnded()
+    {
+        if (Input.GetMouseButtonUp(1))
+            lClickEnd = true;
+        return lClickEnd;
     }
 }

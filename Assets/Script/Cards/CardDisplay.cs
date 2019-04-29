@@ -11,6 +11,7 @@ public class CardDisplay : MonoBehaviour {
     private Sprite cardBack;
     private Vector3 oldPosition;
     private bool selected;
+    private bool check;
     private bool fliped;
     private BoxCollider coll;
     #endregion
@@ -18,6 +19,7 @@ public class CardDisplay : MonoBehaviour {
     void Awake () {
         image = GetComponent<SpriteRenderer>();
         selected = false;
+        check = false;
         fliped = false;
         coll = GetComponent<BoxCollider>();
 	}
@@ -26,34 +28,50 @@ public class CardDisplay : MonoBehaviour {
         if (selected)
             MoveCard(Camera.main.ScreenToWorldPoint(new Vector3(Input.mousePosition.x, Input.mousePosition.y, 9f)));
 
-        GameObject click = InputManager.instance.Clic();
-        if (click != null && click.transform.name == gameObject.transform.name){
+        RightClic();
+        LeftClic();
+    }
+
+    #region Movement
+    private void RightClic() {
+        GameObject click = InputManager.instance.RightClic();
+        if (click != null && click.transform.name == gameObject.transform.name)
+        {
             selected = true;
         }
-        if (selected && InputManager.instance.ClicEnded()){
+        if (selected && InputManager.instance.RightClicEnded())
+        {
             selected = false;
             RaycastHit hit;
-            if (Physics.Raycast(transform.position, Vector3.forward, out hit)) {
-                if (hit.collider.tag == "SuitDeck" && transform.childCount == 0) {
+            if (Physics.Raycast(transform.position, Vector3.forward, out hit))
+            {
+                if (hit.collider.tag == "SuitDeck" && transform.childCount == 0)
+                {
                     SuitDeck sDeck = hit.collider.gameObject.GetComponent<SuitDeck>();
-                    if (sDeck.Check(this)) {
+                    if (sDeck.Check(this))
+                    {
                         RemoveFromContainer();
                         sDeck.AddCard(this);
                         SuitDeckManager.instance.PositionateCard();
                     }
-                    else {
+                    else
+                    {
                         Return();
                     }
                 }
-                else if (hit.collider.tag == "Card") {
+                else if (hit.collider.tag == "Card")
+                {
                     CardDisplay cardHit = hit.collider.gameObject.GetComponent<CardDisplay>();
                     int idx;
-                    if (ColumnsManager.instance.ContainCardAsLast(cardHit, out idx)) {
-                        if (cardHit.card.value - 1 == card.value && cardHit.card.black != card.black) {
+                    if (ColumnsManager.instance.ContainCardAsLast(cardHit, out idx))
+                    {
+                        if (cardHit.card.value - 1 == card.value && cardHit.card.black != card.black)
+                        {
                             MoveToColumn(idx);
                             ColumnsManager.instance.PosisionateCards();
                         }
-                        else {
+                        else
+                        {
                             Return();
                         }
                     }
@@ -62,7 +80,8 @@ public class CardDisplay : MonoBehaviour {
                         MoveToSuitDeck(idx);
                         SuitDeckManager.instance.PositionateCard(idx);
                     }
-                    else {
+                    else
+                    {
                         Return();
                     }
                 }
@@ -82,13 +101,32 @@ public class CardDisplay : MonoBehaviour {
                 else
                     Return();
             }
-            else {
+            else
+            {
                 Return();
             }
         }
     }
 
-    #region Movement
+    private void LeftClic() {
+        GameObject click = InputManager.instance.LeftClic();
+        if (click != null && click.transform.name == gameObject.transform.name)
+        {
+            check = true;
+        }
+        if (check && InputManager.instance.LeftClicEnded())
+        {
+            check = false;
+            int idx;
+            if (transform.childCount == 0 && SuitDeckManager.instance.CheckCard(this, out idx))
+            {
+                RemoveFromContainer();
+                SuitDeckManager.instance.AddCard(this, idx);
+                SuitDeckManager.instance.PositionateCard(idx);
+            }
+        }
+    }
+
     private void MoveCard(Vector3 position) {
         transform.position = position;
     }

@@ -32,7 +32,7 @@ public class DeckManager : MonoBehaviour {
     }
 
     void Update() {
-        GameObject clic = InputManager.instance.Clic();
+        GameObject clic = InputManager.instance.RightClic();
         if (clic != null && clic.tag == "Deck") {
             GetNextCards();
         }
