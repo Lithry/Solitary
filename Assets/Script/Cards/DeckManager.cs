@@ -44,7 +44,7 @@ public class DeckManager : MonoBehaviour {
                 cardsToUse[cardsToUse.Count - 1].ColliderActive(false);
             }
 
-            for (int i = 0; i < 3; i++) {
+            for (int i = 0; i < GameConfig.cardMove; i++) {
                 if (cards.Count > 0) {
                     cards[cards.Count - 1].FlipCard();
                     cardsToUse.Add(cards[cards.Count - 1]);

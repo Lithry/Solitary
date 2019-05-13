@@ -15,14 +15,14 @@ public class SuitDeckManager : MonoBehaviour {
             Destroy(gameObject);
 
         decks = new List<SuitDeck>();
-        sPosition = new Vector3(1.5f, 4.55f, -0.05f);
+        sPosition = new Vector3(7.5f, 4.55f, -0.05f);
         Quaternion rot = new Quaternion(0, 0, 0, 1);
 
-        for (int i = 0; i < 4; i++)
+        for (int i = 0; i < 4 * GameConfig.suitDeckpack; i++)
         {
             GameObject d = Instantiate(suitDeckPrefab, sPosition, rot);
             decks.Add(d.GetComponent<SuitDeck>());
-            sPosition.x += 1.6f;
+            sPosition.x -= 1.6f;
         }
 	}
 
