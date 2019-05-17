@@ -8,7 +8,7 @@ public class InputAndroid : IInput {
 
     public GameObject RightClic()
     {
-        if (Input.GetMouseButtonDown(0))
+        if (!GameConfig.pause && Input.GetMouseButtonDown(0))
         {
             rClickEnd = false;
             RaycastHit hit;
@@ -29,7 +29,7 @@ public class InputAndroid : IInput {
 
     public GameObject LeftClic()
     {
-        if (Input.GetMouseButtonDown(1))
+        if (!GameConfig.pause && Input.GetMouseButtonDown(1))
         {
             lClickEnd = false;
             RaycastHit hit;

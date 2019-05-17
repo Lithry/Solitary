@@ -7,7 +7,7 @@ public class NextCardNumModific : MonoBehaviour {
     public Slider slider;
     private Text text;
 
-    void Start()
+    void Awake()
     {
         text = GetComponent<Text>();
         text.text = slider.value.ToString();
