@@ -7,6 +7,7 @@ public class Column : MonoBehaviour {
     private BoxCollider boxCollider;
     private float spaceBetwen;
 
+
     void Awake () {
         column = new List<CardDisplay>();
         boxCollider = GetComponent<BoxCollider>();
@@ -14,18 +15,35 @@ public class Column : MonoBehaviour {
         spaceBetwen = 2.5f;
     }
 	
-	public void Add(CardDisplay card) {
+	public void Add(CardDisplay card, int childCount) {
         if (column.Count == 0)
             boxCollider.enabled = false;
 
         column.Add(card);
+
+        SetSpaceBetwen();
+
+        if (childCount < 1)
+            PosisionateCards();
     }
 
-    public void Remove(CardDisplay card) {
+    public void Remove(CardDisplay card, int childCount) {
         column.Remove(card);
 
         if (column.Count == 0)
             boxCollider.enabled = true;
+
+        SetSpaceBetwen();
+
+        if (childCount < 1)
+            PosisionateCards();
+    }
+
+    private void SetSpaceBetwen() {
+        if (column.Count < 11)
+            spaceBetwen = 2.5f;
+        else
+            spaceBetwen = 3.0f;
     }
 
     public CardDisplay GetCard(int idx) {

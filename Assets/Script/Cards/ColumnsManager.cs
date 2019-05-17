@@ -5,6 +5,8 @@ using UnityEngine;
 public class ColumnsManager : MonoBehaviour {
     public static ColumnsManager instance;
     public GameObject[] col;
+    public GameObject columnPrefab;
+    private Vector3 pos;
     public DeckManager deck;
     private List<Column> columns;
 	
@@ -14,11 +16,14 @@ public class ColumnsManager : MonoBehaviour {
         else
             Destroy(gameObject);
 
+        pos = new Vector3(-4.7f, 2.0f, -0.05f);
         columns = new List<Column>();
-        foreach (GameObject column in col)
+        for (int i = 0; i < GameConfig.columnsNum; i++)
         {
-            columns.Add(column.GetComponent<Column>());
+            columns.Add(Instantiate(columnPrefab, pos, new Quaternion(0, 0, 0, 1), transform).GetComponent<Column>());
+            pos.x += 2.0f;
         }
+
         PrepareCards();
     }
 
@@ -36,17 +41,16 @@ public class ColumnsManager : MonoBehaviour {
         return false;
     }
 
-    public void AddCardByIndex(CardDisplay card, int idx) {
+    public void AddCardByIndex(CardDisplay card, int idx, int childCount) {
         if (idx > -1 && idx < columns.Count) {
-            columns[idx].Add(card);
-            //card.SetCurrentPosition();
+            columns[idx].Add(card, childCount);
         }
     }
 
-    public void RemoveCard(CardDisplay toRemove) {
+    public void RemoveCard(CardDisplay toRemove, int childCount) {
         for (int i = 0; i < columns.Count; i++) {
             if (columns[i].Contains(toRemove)) {
-                columns[i].Remove(toRemove);
+                columns[i].Remove(toRemove, childCount);
 
                 if (columns[i].Count() > 0)
                     columns[i].GetCard(columns[i].Count() - 1).FlipCardUp();
@@ -64,7 +68,7 @@ public class ColumnsManager : MonoBehaviour {
             for (int j = 0; j < k; j++) {
                 CardDisplay card = deck.GetLastCardOfDeck();
                 card.RemoveFromContainer();
-                columns[i].Add(card);
+                columns[i].Add(card, 0);
             }
             k++;
         }

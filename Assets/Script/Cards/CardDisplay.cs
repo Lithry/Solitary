@@ -35,7 +35,7 @@ public class CardDisplay : MonoBehaviour {
     #region Movement
     private void RightClic() {
         GameObject click = InputManager.instance.RightClic();
-        if (click != null && click.transform.name == gameObject.transform.name)
+        if (click != null && click == gameObject)
         {
             selected = true;
         }
@@ -68,7 +68,6 @@ public class CardDisplay : MonoBehaviour {
                         if (cardHit.card.value - 1 == card.value && cardHit.card.black != card.black)
                         {
                             MoveToColumn(idx);
-                            ColumnsManager.instance.PosisionateCards();
                         }
                         else
                         {
@@ -91,7 +90,6 @@ public class CardDisplay : MonoBehaviour {
                     if (card.value == 13)
                     {
                         MoveToColumn(column);
-                        column.PosisionateCards();
                     }
                     else
                     {
@@ -110,7 +108,7 @@ public class CardDisplay : MonoBehaviour {
 
     private void LeftClic() {
         GameObject click = InputManager.instance.LeftClic();
-        if (click != null && click.transform.name == gameObject.transform.name)
+        if (click != null && click == gameObject)
         {
             check = true;
         }
@@ -148,14 +146,14 @@ public class CardDisplay : MonoBehaviour {
 
     private void MoveToColumn(int indexFromCol) {
         RemoveFromContainer();
-        ColumnsManager.instance.AddCardByIndex(this, indexFromCol);
+        ColumnsManager.instance.AddCardByIndex(this, indexFromCol, transform.childCount);
         if (transform.childCount > 0)
             transform.GetChild(0).gameObject.GetComponent<CardDisplay>().MoveToColumn(indexFromCol);
     }
 
     private void MoveToColumn(Column column) {
         RemoveFromContainer();
-        column.Add(this);
+        column.Add(this, transform.childCount);
         if (transform.childCount > 0)
             transform.GetChild(0).gameObject.GetComponent<CardDisplay>().MoveToColumn(column);
     }
@@ -168,7 +166,7 @@ public class CardDisplay : MonoBehaviour {
     public void RemoveFromContainer()
     {
         DeckManager.instance.RemoveCard(this);
-        ColumnsManager.instance.RemoveCard(this);
+        ColumnsManager.instance.RemoveCard(this, transform.childCount);
         SuitDeckManager.instance.RemoveCard(this);
     }
     #endregion

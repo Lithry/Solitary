@@ -5,7 +5,7 @@ using System.Linq;
 
 public class CardLoader
 {
-    public static List<Card> LoadCards(string path)
+    public static List<Card> LoadCards(string path, int deckNum)
     {
         TextAsset _xml = Resources.Load<TextAsset>(path);
         XmlDocument XmlDoc = new XmlDocument();
@@ -65,12 +65,29 @@ public class CardLoader
                             card.img = sprites.Single(s => s.name == "ERROR");
                             card.imgBack = sprites.Single(s => s.name == "ERROR");
                         }
-
                         cards.Add(card);
                     }
                 }
             }
         }
+
+        if (deckNum > 1) {
+            int count = cards.Count;
+            for (int i = 1; i < deckNum; i++)
+            {
+                for (int j = 0; j < count; j++)
+                {
+                    Card newCard = ScriptableObject.CreateInstance<Card>();
+                    newCard.type = cards[j].type;
+                    newCard.black = cards[j].black;
+                    newCard.value = cards[j].value;
+                    newCard.img = cards[j].img;
+                    newCard.imgBack = cards[j].imgBack;
+                    cards.Add(newCard);
+                }
+            }
+        }
+
         return cards;
     }
 }

@@ -17,7 +17,7 @@ public class DeckManager : MonoBehaviour {
         else
             Destroy(gameObject);
 
-        List<Card> toInstantiate = Shuffle(CardLoader.LoadCards(path));
+        List<Card> toInstantiate = Shuffle(CardLoader.LoadCards(path, GameConfig.deckNum));
         cards = new List<CardDisplay>();
         cardsToUse = new List<CardDisplay>();
 
